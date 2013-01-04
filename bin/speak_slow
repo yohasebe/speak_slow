@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'rubygems'
+require 'trollop'
+require 'speak_slow'
+
+################ parse options ##########
+
+opts = Trollop::options do
+  version SpeakSlow::VERSION
+  banner <<-EOS
+  
+SpeakSlow modifies audio files adding pauses and/or altering speed to suit for language study"
+
+Usage: speak_slow [options] <input file> <output file>
+where: <input file> and <output file> are paths to a wav or mp3 file
+
+[options]:
+EOS
+
+  opt :speed, "Speed of output file [0.1 - 100]", :default => 1.0
+  opt :silence, "Length (secondes) of a pause added to each utterance [0.1 - 120]", :default=> 1
+
+end
+Trollop::die :speed, "must between 0.1 to 100" unless opts[:speed] >= 0.1 and opts[:speed] <= 100
+Trollop::die :silence, "must be 0 to 120" unless opts[:silence] >= 0.1 and opts[:silence] <= 120
+
+############### main program ############### 
+
+if ARGV.size != 2
+  puts "Both input and output file paths must be specified"
+  exit
+end
+
+infile  = ARGV[0]
+outfile = ARGV[1]
+speed     = opts[:speed]
+silence    = opts[:silence]
+
+speakslow = SpeakSlow::Converter.new(infile, outfile)
+speakslow.execute(speed, silence)
