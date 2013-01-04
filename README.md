@@ -1,29 +1,23 @@
 # SpeakSlow
 
-TODO: Write a gem description
+## Description
+
+SpeakSlow modifies audio files adding pauses and/or altering speed to suit for language study
 
 ## Installation
 
-Add this line to your application's Gemfile:
+*SpeakSlow requires [SoX - Sound eXchange](http://sox.sourceforge.net/) with LAME support installed to the system.  Then `gem install`*
 
-    gem 'speak_slow'
+    $ gem install speak_slow 
 
-And then execute:
+## How to Use
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install speak_slow
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+    Usage: speak_slow [options] <input file> <output file>
+    where: <input file> and <output file> are paths to a wav or mp3 file
+    
+    [options]:
+        --speed, -s <f>:   Speed of output file [0.1 - 100] (default: 1.0)
+      --silence, -i <i>:   Length (secondes) of a pause added to each utterance [0.1 - 120]
+                           (default: 1)
+          --version, -v:   Print version and exit
+             --help, -h:   Show this message
