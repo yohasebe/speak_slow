@@ -12,7 +12,7 @@ opts = Trollop::options do
   version SpeakSlow::VERSION
   banner <<-EOS
   
-SpeakSlow modifies audio files adding pauses and/or altering speed to suit for language study"
+SpeakSlow modifies audio files adding pauses and/or altering speed to suit for language study
 
 Usage: speak_slow [options] <input file> <output file>
 where: <input file> and <output file> are paths to a wav or mp3 file

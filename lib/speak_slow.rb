@@ -113,9 +113,10 @@ module SpeakSlow
     # end
     
     def apply_sox_to_wav(in_filepath, out_filepath)
-      puts "Applying SoX functions to WAV (this might take some time ...)"
+      puts "Applying SoX functions to WAV (this might take a few minutes or more)"
       # silence = "silence 0 1 0.3 -32d"
-      silence = "silence 1 0.01 -32d 1 0.3 -32d"
+      # silence = "silence 1 0.005 -32d 1 0.3 -32d"
+      silence = "silence 1 0.01 1% 1 0.3 1%"
       if @speed and @speed != 1
         speed = "tempo -s #{@speed}"
         pad = "pad 0 #{@silence.to_f * @speed}"
@@ -141,14 +142,15 @@ module SpeakSlow
     def check_command(command)
       basename = File.basename(command)
       path = ""
+      print "Checking #{basename} command: "
       if open("| which #{command} 2>/dev/null"){ |f| path = f.gets }
-        puts "\"#{basename}\" command is installed in #{path}"
+        puts "detected at #{path}"
         return path.strip
       elsif open("| which #{basename} 2>/dev/null"){ |f| path = f.gets }
-        puts "\"#{basename}\" command is installed in #{path}"
+        puts "detected at #{path}"
         return path.strip
       else
-        puts "#{basename} is not installed to the system"
+        puts "not installed to the system"
         exit
       end
     end
