@@ -66,51 +66,51 @@ module SpeakSlow
       end
     end
     
-    def split_wav(in_filepath)
-      puts "Splitting WAV to segments"
-      result = `#{@sox} #{in_filepath} #{@outdir}/split-.wav silence 0 1 0.3 -32d : newfile : restart`
-    end
-
-    def merge_wav(out_filepath)
-      temp_filepath = @outdir + "/temp.wav"
-      files = []
-      Dir.foreach(@outdir) do |file|
-        next unless /^split\-\d+\.wav$/ =~ file
-        files << @outdir + "/" + file      
-      end
-      index = 0
-      puts "Merging segments back to one WAV file"
-      bar = ProgressBar.new(@basename, files.size)        
-      files.sort.each do |filepath|
-        length = `#{@soxi} -D #{filepath}`.to_f
-        num_seconds = @silence == "auto" ? length.to_i + 1 : @silence.to_i
-        index += 1      
-        bar.inc(1)
-        if index == 1
-          File.rename(filepath, out_filepath)
-          next
-        end
-    
-        if length == 0 or @silence.to_f == 0
-          `#{@sox} #{out_filepath} #{filepath} #{temp_filepath} ; mv #{temp_filepath} #{out_filepath} ; rm #{filepath}`          
-        else
-          if @silence == "auto"
-            silence_length =  length
-          elsif @speed and @speed != 1
-            silence_length = @silence.to_f / @speed * 1
-          else 
-            silence_length = @silence
-          end
-          `#{@sox} #{out_filepath} -p pad 0 #{silence_length} | #{@sox} - #{filepath} #{temp_filepath} ; mv #{temp_filepath} #{out_filepath} ; rm #{filepath}`
-        end
-      end
-      print "\n"
-      puts "Changing speed of the resulting WAV"
-      if @speed and @speed.to_f != 1.0
-        `#{@sox} #{out_filepath} #{temp_filepath} tempo -s #{@speed}`
-        `mv #{temp_filepath} #{out_filepath}`
-      end      
-    end
+    # def split_wav(in_filepath)
+    #   puts "Splitting WAV to segments"
+    #   result = `#{@sox} #{in_filepath} #{@outdir}/split-.wav silence 0 1 0.3 -32d : newfile : restart`
+    # end
+    # 
+    # def merge_wav(out_filepath)
+    #   temp_filepath = @outdir + "/temp.wav"
+    #   files = []
+    #   Dir.foreach(@outdir) do |file|
+    #     next unless /^split\-\d+\.wav$/ =~ file
+    #     files << @outdir + "/" + file      
+    #   end
+    #   index = 0
+    #   puts "Merging segments back to one WAV file"
+    #   bar = ProgressBar.new(@basename, files.size)        
+    #   files.sort.each do |filepath|
+    #     length = `#{@soxi} -D #{filepath}`.to_f
+    #     num_seconds = @silence == "auto" ? length.to_i + 1 : @silence.to_i
+    #     index += 1      
+    #     bar.inc(1)
+    #     if index == 1
+    #       File.rename(filepath, out_filepath)
+    #       next
+    #     end
+    # 
+    #     if length == 0 or @silence.to_f == 0
+    #       `#{@sox} #{out_filepath} #{filepath} #{temp_filepath} ; mv #{temp_filepath} #{out_filepath} ; rm #{filepath}`          
+    #     else
+    #       if @silence == "auto"
+    #         silence_length =  length
+    #       elsif @speed and @speed != 1
+    #         silence_length = @silence.to_f / @speed * 1
+    #       else 
+    #         silence_length = @silence
+    #       end
+    #       `#{@sox} #{out_filepath} -p pad 0 #{silence_length} | #{@sox} - #{filepath} #{temp_filepath} ; mv #{temp_filepath} #{out_filepath} ; rm #{filepath}`
+    #     end
+    #   end
+    #   print "\n"
+    #   puts "Changing speed of the resulting WAV"
+    #   if @speed and @speed.to_f != 1.0
+    #     `#{@sox} #{out_filepath} #{temp_filepath} tempo -s #{@speed}`
+    #     `mv #{temp_filepath} #{out_filepath}`
+    #   end      
+    # end
     
     def apply_sox_to_wav(in_filepath, out_filepath)
       puts "Applying SoX functions to WAV (this might take some time ...)"
