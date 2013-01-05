@@ -53,8 +53,11 @@ module SpeakSlow
       elsif @in_format == "wav"
         `cp #{@in_filepath} #{temp_wav_original}`        
       end
-      split_wav(temp_wav_original)
-      merge_wav(temp_wav_result)
+      
+      apply_sox_to_wav(temp_wav_original, temp_wav_result)
+      # split_wav(temp_wav_original)
+      # merge_wav(temp_wav_result)
+      
       if @out_format == "mp3"
         convert_to_mp3(temp_wav_result, @out_filepath)
         `rm #{temp_wav_original} #{temp_wav_result}`
@@ -87,7 +90,7 @@ module SpeakSlow
           File.rename(filepath, out_filepath)
           next
         end
-
+    
         if length == 0 or @silence.to_f == 0
           `#{@sox} #{out_filepath} #{filepath} #{temp_filepath} ; mv #{temp_filepath} #{out_filepath} ; rm #{filepath}`          
         else
@@ -108,9 +111,23 @@ module SpeakSlow
         `mv #{temp_filepath} #{out_filepath}`
       end      
     end
+    
+    def apply_sox_to_wav(in_filepath, out_filepath)
+      puts "Applying SoX functions to WAV (this might take some time ...)"
+      # silence = "silence 0 1 0.3 -32d"
+      silence = "silence 1 0.01 -32d 1 0.3 -32d"
+      if @speed and @speed != 1
+        speed = "tempo -s #{@speed}"
+        pad = "pad 0 #{@silence.to_f * @speed}"
+        `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - -p | #{@sox} - #{out_filepath} #{speed}`
+      else
+        pad = "pad 0 #{@silence.to_f}"
+        `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - #{out_filepath} `
+      end
+    end
 
     def convert_to_wav(in_filepath, out_filepath)
-      basename = File.basename(in_filepath  )
+      basename = File.basename(in_filepath )
       puts "Converting to WAV: #{basename}"      
       `#{@sox} #{in_filepath} #{out_filepath}`
     end
