@@ -10,7 +10,7 @@ SpeakSlow modifies audio files adding pauses and/or altering speed to suit for l
 
     $ gem install speak_slow 
 
-## How to Use
+## Usage
 
     Usage: speak_slow [options] <input file> <output file>
     where: <input file> and <output file> are paths to a wav or mp3 file
