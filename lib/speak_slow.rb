@@ -117,13 +117,18 @@ module SpeakSlow
       # silence = "silence 0 1 0.3 -32d"
       # silence = "silence 1 0.005 -32d 1 0.3 -32d"
       silence = "silence 1 0.01 1% 1 0.3 1%"
-      if @speed and @speed != 1
+      if @speed and @speed != 1 and @silence and @silence != 0 #speed and silence
         speed = "tempo -s #{@speed}"
         pad = "pad 0 #{@silence.to_f * @speed}"
         `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - -p | #{@sox} - #{out_filepath} #{speed}`
-      else
+      elsif @speed and @speed != 1 #only speed
+        speed = "tempo -s #{@speed}"
+        `#{@sox} #{in_filepath} #{out_filepath} #{speed}`
+      elsif @silence and @silence != 0 #only silence
         pad = "pad 0 #{@silence.to_f}"
         `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - #{out_filepath} `
+      else #nothing changed
+        `cp #{in_filepath} #{out_filepath}`
       end
     end
 
