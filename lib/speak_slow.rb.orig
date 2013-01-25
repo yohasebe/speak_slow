@@ -111,7 +111,7 @@ module SpeakSlow
     #     `mv #{temp_filepath} #{out_filepath}`
     #   end      
     # end
-     
+    
     def apply_sox_to_wav(in_filepath, out_filepath)
       puts "Applying SoX functions to WAV (this might take a few minutes or more)"
       # silence = "silence 0 1 0.3 -32d"
@@ -121,6 +121,7 @@ module SpeakSlow
         speed = "tempo -s #{@speed}"
         pad = "pad 0 #{@silence.to_f * @speed}"
         `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - -p | #{@sox} - #{out_filepath} #{speed}`
+<<<<<<< HEAD
       elsif @speed and @speed != 1 #only speed
         speed = "tempo -s #{@speed}"
         `#{@sox} #{in_filepath} #{out_filepath} #{speed}`
@@ -128,6 +129,12 @@ module SpeakSlow
         pad = "pad 0 #{@silence.to_f}"
         `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - #{out_filepath} `
       else #nothing changed
+=======
+      elsif @silence and @silence != 0
+        pad = "pad 0 #{@silence.to_f}"
+        `#{@sox} #{in_filepath} -p #{silence} #{pad} : restart | #{@sox} - #{out_filepath} `
+      else
+>>>>>>> origin/master
         `cp #{in_filepath} #{out_filepath}`
       end
     end
