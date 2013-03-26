@@ -6,7 +6,7 @@ SpeakSlow modifies audio files adding pauses and/or altering speed to suit for l
 
 ## Installation
 
-*SpeakSlow requires [SoX - Sound eXchange](http://sox.sourceforge.net/) with LAME support installed to the system.  Then `gem install`*
+*SpeakSlow requires [SoX - Sound eXchange](http://sox.sourceforge.net/) version 14.4.1 or greater with LAME support installed to the system.  Then `gem install`*
 
     $ gem install speak_slow 
 
